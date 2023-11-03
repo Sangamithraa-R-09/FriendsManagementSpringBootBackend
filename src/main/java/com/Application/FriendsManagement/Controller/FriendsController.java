@@ -53,5 +53,24 @@ public class FriendsController {
         }
     }
 
+    @PostMapping("/follower")
+    public ResponseEntity<ResponseDTO> followerStatus(@RequestBody SenderReceiverDTO senderReceiverDTO){
+        String response=service.isUsersValid(senderReceiverDTO.getSender(), senderReceiverDTO.getReceiver());
+        if(response.equals("")){
+            return service.followerStatus(senderReceiverDTO);
+        }
+        else{
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,response,null));
+        }
+    }
+
+    @PostMapping("/unfriend")
+    public ResponseEntity<ResponseDTO> unfriend(@RequestBody SenderReceiverDTO senderReceiverDTO){
+        String response= service.isUsersValid(senderReceiverDTO.getSender(),senderReceiverDTO.getReceiver());
+        if(response.equals("")){
+            return service.unfriend(senderReceiverDTO);
+        }
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST,"No such relation exists",null));
+    }
 
 }

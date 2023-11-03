@@ -1,14 +1,13 @@
 package com.Application.FriendsManagement.DTO;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponseDTO {
-    private String accessToken;
-
+public class RefreshTokenRequest {
     private String token;
 
 }

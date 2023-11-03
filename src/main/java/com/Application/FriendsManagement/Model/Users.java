@@ -33,6 +33,16 @@ public class Users implements UserDetails {
     private String status;
     private Date expirydate;
 
+    private String resetPassword;
+
+    public String getResetPassword() {
+        return resetPassword;
+    }
+
+    public void setResetPassword(String resetPassword) {
+        this.resetPassword = resetPassword;
+    }
+
     public Date getExpirydate() {
         return expirydate;
     }

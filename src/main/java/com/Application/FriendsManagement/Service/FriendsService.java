@@ -147,18 +147,53 @@ public class FriendsService {
             Optional<FriendsList> friendsList = repo.findBySenderUserIdAndReceiverUserId(senderReceiverDTO.getSender(), senderReceiverDTO.getReceiver());
             FriendsList friendsList1 = friendsList.get();
             String followingStatus = friendsList1.getFollowingStatus();
-            if (followingStatus.equals("")) {
+            if (followingStatus==null) {
                 friendsList1.setFollowingStatus("following");
                 repo.save(friendsList1);
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "Now you are following", null));
-            } else if (followingStatus.equals("following")) {
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "You are already following", null));
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "Now"+senderReceiverDTO.getSender() +"is following "+senderReceiverDTO.getReceiver(), null));
             }
+           else if (followingStatus.equals("following")) {
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "Already you are following "+senderReceiverDTO.getReceiver(), null));
+           }
         }
         else {
             return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST, "No such relation exists", null));
         }
         return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST, "", null));
+    }
+
+    public ResponseEntity<ResponseDTO> followerStatus(SenderReceiverDTO senderReceiverDTO) {
+        if(isRelationExist(senderReceiverDTO)){
+            Optional<FriendsList> friendsList=repo.findBySenderUserIdAndReceiverUserId(senderReceiverDTO.getSender(), senderReceiverDTO.getReceiver());
+            FriendsList friendsList1= friendsList.get();
+            String followerStatus=friendsList1.getFollowerStatus();
+            if(followerStatus==null){
+                friendsList1.setFollowerStatus("follower");
+                repo.save(friendsList1);
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,"Now"+friendsList1.getReceiver()+" is following "+friendsList1.getSender(),null));
+            }
+            else if(followerStatus.equals("follower")){
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,"Already you are following"+friendsList1.getSender(),null));
+            }
+        }
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,"No such relation exists",null));
+    }
+
+    public ResponseEntity<ResponseDTO> unfriend(SenderReceiverDTO senderReceiverDTO) {
+        if(isRelationExist(senderReceiverDTO)){
+            Optional<FriendsList> friendsList=repo.findBySenderUserIdAndReceiverUserId(senderReceiverDTO.getSender(),senderReceiverDTO.getReceiver());
+            FriendsList friendsList1=friendsList.get();
+            String status=friendsList1.getFriendStatus();
+            if(status.equals("accepted")){
+                friendsList1.setFriendStatus("unfriend");
+                repo.save(friendsList1);
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,"You have unfriend "+senderReceiverDTO.getReceiver(),null));
+            }
+            else if(status.equals("requested") || status.equals("unfriend")){
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK,"You are not even a friend.So, you cannot unfriend",null));
+            }
+        }
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST,"No such relation exists",null));
     }
 }
 
